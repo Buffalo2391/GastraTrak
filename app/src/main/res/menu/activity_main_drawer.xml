@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_food_diary"
+            android:icon="?android:attr/actionModePasteDrawable"
+            android:title="Food Diary" />
+        <item
+            android:id="@+id/nav_new_pain"
+            android:icon="@android:drawable/star_on"
+            android:title="New Pain Recording" />
+        <item
+            android:id="@+id/nav_stool"
+            android:icon="?android:attr/textSelectHandle"
+            android:title="Record Stool" />
+        <item
+            android:id="@+id/nav_graphing"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Graphing" />
+        <item
+            android:id="@+id/nav_stats"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Stats" />
+
+    </group>
+
+    <item android:title="Connect">
+        <menu>
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>
