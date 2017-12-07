@@ -101,7 +101,7 @@ public class databaseController extends SQLiteOpenHelper {
 
         db.delete(TABLE_FOOD, KEY_FOOD_ITEM + " = ?", new String[]{item.getFoodItem()});
         db.close();
-    }
+}
 
     public ArrayList<foodItem> getAllFoodItems() {
         SQLiteDatabase db = this.getReadableDatabase();

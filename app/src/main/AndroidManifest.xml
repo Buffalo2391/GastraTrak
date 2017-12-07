@@ -28,7 +28,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".StoolRecordActivity"></activity>
+        <activity android:name=".StoolRecordActivity" />
+        <activity android:name=".FoodDiaryAddEdit"></activity>
     </application>
 
 </manifest>

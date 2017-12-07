@@ -75,7 +75,9 @@ public class MainActivity extends AppCompatActivity
             db.addPainRecording(new painItem(data.getIntArrayExtra("PainArray"), new Time(System.currentTimeMillis())));
         } else if(requestCode == 2 && resultCode == RESULT_OK && data != null){
             db.addStoolRecording(new stoolItem(data.getIntArrayExtra("StoolArray"), new Time(System.currentTimeMillis())));
-            //TODO add stool to database
+        }  else if(requestCode == 3 && resultCode == RESULT_OK && data != null){
+            db.addFoodItem(new foodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", System.currentTimeMillis()))));
+            this.onCreate(null);
         }
     }
     public void painScaleOpener(View View) {
@@ -90,8 +92,11 @@ public class MainActivity extends AppCompatActivity
 
 
     public void addFoodEmpty() {
-        foodsList.add(new foodItem("", new Time(System.currentTimeMillis())));
-        this.foodAdapter.notifyDataSetChanged();
+        Intent intent = new Intent(this, FoodDiaryAddEdit.class);
+        startActivityForResult (intent, 3);
+//
+//        foodsList.add(new foodItem("", new Time(System.currentTimeMillis())));
+//        this.foodAdapter.notifyDataSetChanged();
     }
 
     @Override
