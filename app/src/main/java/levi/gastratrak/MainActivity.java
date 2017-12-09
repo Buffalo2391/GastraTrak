@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity
         } else if(requestCode == 2 && resultCode == RESULT_OK && data != null){
             db.addStoolRecording(new stoolItem(data.getIntArrayExtra("StoolArray"), new Time(System.currentTimeMillis())));
         }  else if(requestCode == 3 && resultCode == RESULT_OK && data != null){
-            db.addFoodItem(new foodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", System.currentTimeMillis()))));
-            this.onCreate(null);
+            foodAdapter.add(new foodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", System.currentTimeMillis()))));
+            foodAdapter.notifyDataSetChanged();
         }
     }
     public void painScaleOpener(View View) {
