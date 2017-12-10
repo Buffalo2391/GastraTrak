@@ -19,11 +19,11 @@
         android:inputType="time" />
 
     <ImageButton
-        android:id="@+id/foodItemRemoveButton"
+        android:id="@+id/foodItemEditButton"
         android:layout_width="5dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        app:srcCompat="@android:drawable/ic_menu_delete" />
+        app:srcCompat="@android:drawable/ic_menu_edit" />
 
 
 </LinearLayout>

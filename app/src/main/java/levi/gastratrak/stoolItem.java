@@ -6,12 +6,12 @@ import java.sql.Time;
  * Created by Levi on 6/12/2017.
  */
 
-public class stoolItem {
+public class StoolItem {
     private Time recordedTime = null;
     private int[] stoolArray;
 
 
-    public stoolItem(int[] stoolArray, Time time) {
+    public StoolItem(int[] stoolArray, Time time) {
         this.setStoolArray(stoolArray);
         this.setPainTime(time);
     }

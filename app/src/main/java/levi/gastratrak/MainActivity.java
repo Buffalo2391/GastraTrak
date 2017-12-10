@@ -21,9 +21,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ArrayList<foodItem> foodsList = new ArrayList<>();
-    foodItemAdapter foodAdapter;
-    databaseController db = new databaseController(this);
+    ArrayList<FoodItem> foodsList = new ArrayList<>();
+    FoodItemAdapter foodAdapter;
+    DatabaseController db = new DatabaseController(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
         foodsList.addAll(db.getAllFoodItems());
 
 
-        foodAdapter = new foodItemAdapter(MainActivity.this, R.layout.food_diary_entry, foodsList, db);
+        foodAdapter = new FoodItemAdapter(MainActivity.this, R.layout.food_diary_entry, foodsList, db);
         ListView foodDiaryView = findViewById(R.id.foodDiary_list);
         foodDiaryView.setAdapter(foodAdapter);
 
@@ -72,11 +72,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            db.addPainRecording(new painItem(data.getIntArrayExtra("PainArray"), new Time(System.currentTimeMillis())));
+            db.addPainRecording(new PainItem(data.getIntArrayExtra("PainArray"), new Time(System.currentTimeMillis())));
         } else if(requestCode == 2 && resultCode == RESULT_OK && data != null){
-            db.addStoolRecording(new stoolItem(data.getIntArrayExtra("StoolArray"), new Time(System.currentTimeMillis())));
+            db.addStoolRecording(new StoolItem(data.getIntArrayExtra("StoolArray"), new Time(System.currentTimeMillis())));
         }  else if(requestCode == 3 && resultCode == RESULT_OK && data != null){
-            foodAdapter.add(new foodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", System.currentTimeMillis()))));
+            FoodItem item = new FoodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", System.currentTimeMillis())));
+            foodAdapter.add(item);
+            db.addFoodItem(item);
             foodAdapter.notifyDataSetChanged();
         }
     }
@@ -89,13 +91,18 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, StoolRecordActivity.class);
         startActivityForResult (intent, 2);
     }
-
+    public void editFoodItem(FoodItem item) {
+        Intent intent = new Intent(this, FoodDiaryAddEditActivity.class);
+        intent.putExtra("foodName", item.getFoodItem());
+        intent.putExtra("foodTime", item.getFoodTime());
+        startActivityForResult (intent, 3);
+    }
 
     public void addFoodEmpty() {
-        Intent intent = new Intent(this, FoodDiaryAddEdit.class);
+        Intent intent = new Intent(this, FoodDiaryAddEditActivity.class);
         startActivityForResult (intent, 3);
 //
-//        foodsList.add(new foodItem("", new Time(System.currentTimeMillis())));
+//        foodsList.add(new FoodItem("", new Time(System.currentTimeMillis())));
 //        this.foodAdapter.notifyDataSetChanged();
     }
 

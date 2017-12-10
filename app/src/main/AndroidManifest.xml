@@ -37,7 +37,7 @@
                 android:value=".MainActivity" />
         </activity>
 
-        <activity android:name=".FoodDiaryAddEdit"
+        <activity android:name=".FoodDiaryAddEditActivity"
             android:parentActivityName=".MainActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->

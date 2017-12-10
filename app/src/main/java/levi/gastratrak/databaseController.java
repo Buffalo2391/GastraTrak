@@ -10,7 +10,7 @@ import android.util.Log;
 import java.sql.Time;
 import java.util.ArrayList;
 
-public class databaseController extends SQLiteOpenHelper {
+public class DatabaseController extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
@@ -45,7 +45,7 @@ public class databaseController extends SQLiteOpenHelper {
     private static final String KEY_STOOL_DIFFICULTY = "difficulty";
 
 
-    public databaseController(Context context) {
+    public DatabaseController(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -85,7 +85,7 @@ public class databaseController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addFoodItem(foodItem item) {
+    public void addFoodItem(FoodItem item) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -96,16 +96,16 @@ public class databaseController extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void removeFoodItem(foodItem item) {
+    public void removeFoodItem(FoodItem item) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(TABLE_FOOD, KEY_FOOD_ITEM + " = ?", new String[]{item.getFoodItem()});
         db.close();
 }
 
-    public ArrayList<foodItem> getAllFoodItems() {
+    public ArrayList<FoodItem> getAllFoodItems() {
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<foodItem> result = new ArrayList<>();
+        ArrayList<FoodItem> result = new ArrayList<>();
 
         try {
             // Select All Query
@@ -114,7 +114,7 @@ public class databaseController extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery(selectQuery, null);
             if (cursor.moveToFirst()) {
                 do {
-                    foodItem item = new foodItem(cursor.getString(2), new Time(cursor.getLong(1)));
+                    FoodItem item = new FoodItem(cursor.getString(2), new Time(cursor.getLong(1)));
                     item.id = (Integer.parseInt(cursor.getString(0)));
                     result.add(item);
                 } while (cursor.moveToNext());
@@ -132,7 +132,7 @@ public class databaseController extends SQLiteOpenHelper {
     }
 
 
-    public void addPainRecording(painItem item) {
+    public void addPainRecording(PainItem item) {
         SQLiteDatabase db = this.getWritableDatabase();
         int[] painArray = item.getPainLevel();
         ContentValues values = new ContentValues();
@@ -147,7 +147,7 @@ public class databaseController extends SQLiteOpenHelper {
     }
 
 
-    public void addStoolRecording(stoolItem item) {
+    public void addStoolRecording(StoolItem item) {
         SQLiteDatabase db = this.getWritableDatabase();
         int[] stoolArray = item.getStoolArray();
         ContentValues values = new ContentValues();

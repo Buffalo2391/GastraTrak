@@ -5,12 +5,12 @@ import java.sql.Time;
  * Created by Levi on 17/11/2017.
  */
 
-public class foodItem {
+public class FoodItem {
     private String foodType = "";
     private Time consumedTime = null;
     public long id = 0;
 
-    public foodItem(String foodName, Time time) {
+    public FoodItem(String foodName, Time time) {
         this.setFoodItem(foodName);
         this.setItemTime(time);
         this.id = time.getTime();

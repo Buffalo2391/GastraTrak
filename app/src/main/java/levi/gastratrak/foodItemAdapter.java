@@ -12,13 +12,13 @@ import java.util.ArrayList;
  * Created by Levi on 17/11/2017. Adapter for food items on food diary
  */
 
-public class foodItemAdapter extends ArrayAdapter<foodItem> {
+public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
 
-    private ArrayList<foodItem> items;
+    private ArrayList<FoodItem> items;
     private int layoutResourceId;
     private Context context;
-    private databaseController databaseControllerObject;
-    public foodItemAdapter(Context context, int layoutResourceId, ArrayList<foodItem> items, databaseController databaseControlObject) {
+    private DatabaseController databaseControllerObject;
+    public FoodItemAdapter(Context context, int layoutResourceId, ArrayList<FoodItem> items, DatabaseController databaseControlObject) {
         super(context, layoutResourceId, items);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -27,7 +27,7 @@ public class foodItemAdapter extends ArrayAdapter<foodItem> {
     }
 
     @Override
-    public View getView(final int position, View row, ViewGroup parent) {
+    public View getView(final int position, View row, final ViewGroup parent) {
 
         foodItemHolder holder;
 
@@ -36,7 +36,7 @@ public class foodItemAdapter extends ArrayAdapter<foodItem> {
 
         holder = new foodItemHolder();
         holder.foodObject = items.get(position);
-        holder.foodButton = row.findViewById(R.id.foodItemRemoveButton);
+        holder.foodButton = row.findViewById(R.id.foodItemEditButton);
         holder.foodButton.setTag(holder.foodObject);
 
         holder.foodType = row.findViewById(R.id.foodItemName);
@@ -46,9 +46,7 @@ public class foodItemAdapter extends ArrayAdapter<foodItem> {
         holder.foodButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                databaseControllerObject.removeFoodItem(items.get(position));
-                items.remove(position);
-                notifyDataSetChanged();
+                ((MainActivity) context).editFoodItem(items.get(position));
             }
         });
         holder.foodType.addTextChangedListener(new TextWatcher() {
@@ -73,31 +71,6 @@ public class foodItemAdapter extends ArrayAdapter<foodItem> {
 
             }
         });
-        holder.foodTime.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                String str = charSequence.toString();
-//                DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
-//                Date date = null;
-//                try {
-//                    date = formatter.parse(str);
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                java.sql.Time foodTime = new java.sql.Time(date.getTime());
-//                items.get(position).setItemTime(foodTime);
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
         return row;
     }
 
@@ -108,7 +81,7 @@ public class foodItemAdapter extends ArrayAdapter<foodItem> {
     }
 
     public static class foodItemHolder {
-        foodItem foodObject;
+        FoodItem foodObject;
         TextView foodType;
         TextView foodTime;
         ImageButton foodButton;
