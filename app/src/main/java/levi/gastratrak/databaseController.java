@@ -115,7 +115,6 @@ public class DatabaseController extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do {
                     FoodItem item = new FoodItem(cursor.getString(2), new Time(cursor.getLong(1)));
-                    item.id = (Integer.parseInt(cursor.getString(0)));
                     result.add(item);
                 } while (cursor.moveToNext());
             }

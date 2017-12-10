@@ -76,9 +76,14 @@ public class MainActivity extends AppCompatActivity
         } else if(requestCode == 2 && resultCode == RESULT_OK && data != null){
             db.addStoolRecording(new StoolItem(data.getIntArrayExtra("StoolArray"), new Time(System.currentTimeMillis())));
         }  else if(requestCode == 3 && resultCode == RESULT_OK && data != null){
-            FoodItem item = new FoodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", System.currentTimeMillis())));
+            FoodItem item = new FoodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", 0)));
             foodAdapter.add(item);
             db.addFoodItem(item);
+            foodAdapter.notifyDataSetChanged();
+        } else if(requestCode == 3 && resultCode == RESULT_CANCELED && data != null){
+            FoodItem item = new FoodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", 0)));
+            foodAdapter.remove(item);
+            db.removeFoodItem(item);
             foodAdapter.notifyDataSetChanged();
         }
     }
@@ -94,7 +99,7 @@ public class MainActivity extends AppCompatActivity
     public void editFoodItem(FoodItem item) {
         Intent intent = new Intent(this, FoodDiaryAddEditActivity.class);
         intent.putExtra("foodName", item.getFoodItem());
-        intent.putExtra("foodTime", item.getFoodTime());
+        intent.putExtra("foodTime", item.getFoodTime().getTime());
         startActivityForResult (intent, 3);
     }
 

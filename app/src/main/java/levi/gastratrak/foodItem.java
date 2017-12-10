@@ -6,27 +6,40 @@ import java.sql.Time;
  */
 
 public class FoodItem {
-    private String foodType = "";
-    private Time consumedTime = null;
-    public long id = 0;
+    private String foodItem = "";
+    private Time foodTime = null;
 
     public FoodItem(String foodName, Time time) {
         this.setFoodItem(foodName);
         this.setItemTime(time);
-        this.id = time.getTime();
     }
 
-    public void setFoodItem(String foodItem){
-        this.foodType = foodItem;
-    }
-    public void setItemTime(Time foodTime){
-        this.consumedTime = foodTime;
-    }
-    public Time getFoodTime(){
-        return this.consumedTime;
-    }
-    public  String getFoodItem(){
-        return this.foodType;
+    public void setFoodItem(String foodItem) {
+        this.foodItem = foodItem;
     }
 
+    public void setItemTime(Time foodTime) {
+        this.foodTime = foodTime;
+    }
+
+    public Time getFoodTime() {
+        return this.foodTime;
+    }
+
+    public String getFoodItem() {
+        return this.foodItem;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() != FoodItem.class) {
+            return false;
+        }
+        if (((FoodItem) obj).getFoodItem() == this.getFoodItem() &&
+                ((FoodItem) obj).getFoodTime() == this.getFoodTime()) {
+                return true;
+            }
+        return false;
+
+    }
 }

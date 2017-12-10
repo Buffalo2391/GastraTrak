@@ -80,6 +80,7 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         holder.foodTime.setText(String.valueOf(holder.foodObject.getFoodTime()));
     }
 
+
     public static class foodItemHolder {
         FoodItem foodObject;
         TextView foodType;

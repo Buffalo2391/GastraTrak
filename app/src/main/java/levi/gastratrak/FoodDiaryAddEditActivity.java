@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,17 +19,19 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class FoodDiaryAddEditActivity extends AppCompatActivity {
-
+    FoodItem item;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_diary_add_edit);
         Button saveButton = findViewById(R.id.SaveButton);
+        Button deleteButton = findViewById(R.id.DeleteButton);
         EditText foodName = findViewById(R.id.FoodNameInput);
         TimePicker foodTime = findViewById(R.id.timePicker);
         Intent intent = getIntent();
         String oldItemName = intent.getStringExtra("foodName");
         long oldItemTime = intent.getLongExtra("foodTime", 0);
+        item = new FoodItem(oldItemName, new Time(oldItemTime));
         Calendar cal = Calendar.getInstance();
         cal.setTimeZone(TimeZone.getDefault());
         cal.setTimeInMillis(oldItemTime);
@@ -42,8 +45,21 @@ public class FoodDiaryAddEditActivity extends AppCompatActivity {
                 saveButtonPressed();
             }
         });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteButtonPressed();
+            }
+        });
     }
 
+    private  void deleteButtonPressed() {
+        Intent output = new Intent();
+        output.putExtra("foodName", item.getFoodItem());
+        output.putExtra("foodTime", item.getFoodTime().getTime());
+        setResult(RESULT_CANCELED, output);
+        finish();
+    }
     private void saveButtonPressed() {
         EditText foodName = findViewById(R.id.FoodNameInput);
         TimePicker foodTime = findViewById(R.id.timePicker);
