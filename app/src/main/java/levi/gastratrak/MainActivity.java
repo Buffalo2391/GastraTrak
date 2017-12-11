@@ -87,7 +87,10 @@ public class MainActivity extends AppCompatActivity
     public void painScaleOpener(View View) {
         Intent intent = new Intent(this, PainScaleActivity.class);
         startActivityForResult(intent, 1);
-
+    }
+    public void graphModeOpener(View View) {
+        Intent intent = new Intent(this, GraphingModeActivity.class);
+        startActivity(intent);
     }
 
     public void stoolRecordOpener(View View) {
@@ -142,7 +145,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_food_diary) {
             // return to the main, not sure if going to implement
-
+            
         } else if (id == R.id.nav_new_pain) {
             painScaleOpener(item.getActionView());
         } else if (id == R.id.nav_stool) {
@@ -150,7 +153,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_stats) {
             //TODO make stats
         } else if (id == R.id.nav_graphing) {
-            //TODO make graphing mode
+            graphModeOpener(item.getActionView());
         } else if (id == R.id.nav_send) {
             //TODO export database
         }
