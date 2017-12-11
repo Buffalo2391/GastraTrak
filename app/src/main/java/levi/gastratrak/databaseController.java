@@ -14,7 +14,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     // Database Name
     private static final String DATABASE_NAME = "pain_and_food_diary";
@@ -157,6 +157,5 @@ public class DatabaseController extends SQLiteOpenHelper {
         values.put(KEY_STOOL_TIME, item.getStoolTime().getTime());
         db.insert(TABLE_STOOL, null, values);
         db.close();
-
     }
 }

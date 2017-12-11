@@ -42,10 +42,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        foodsList.addAll(db.getAllFoodItems());
-
-
         foodAdapter = new FoodItemAdapter(MainActivity.this, R.layout.food_diary_entry, foodsList, db);
         ListView foodDiaryView = findViewById(R.id.foodDiary_list);
         foodDiaryView.setAdapter(foodAdapter);
@@ -73,39 +69,44 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             db.addPainRecording(new PainItem(data.getIntArrayExtra("PainArray"), new Time(System.currentTimeMillis())));
-        } else if(requestCode == 2 && resultCode == RESULT_OK && data != null){
+        } else if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
             db.addStoolRecording(new StoolItem(data.getIntArrayExtra("StoolArray"), new Time(System.currentTimeMillis())));
-        }  else if(requestCode == 3 && resultCode == RESULT_OK && data != null){
+        } else if (requestCode == 3 && resultCode == RESULT_OK && data != null) {
             FoodItem item = new FoodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", 0)));
-            foodAdapter.add(item);
+            FoodItem oldItem = new FoodItem(data.getStringExtra("oldFoodName"), new Time(data.getLongExtra("oldFoodTime", 0)));
+            db.removeFoodItem(oldItem);
             db.addFoodItem(item);
-            foodAdapter.notifyDataSetChanged();
-        } else if(requestCode == 3 && resultCode == RESULT_CANCELED && data != null){
-            FoodItem item = new FoodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", 0)));
-            foodAdapter.remove(item);
+            foodAdapter.updateFromDatabase();
+        } else if (requestCode == 3 && resultCode == RESULT_CANCELED && data != null) {
+            FoodItem item = new FoodItem(data.getStringExtra("oldFoodName"), new Time(data.getLongExtra("oldFoodTime", 0)));
             db.removeFoodItem(item);
-            foodAdapter.notifyDataSetChanged();
+            foodAdapter.updateFromDatabase();
         }
     }
+
     public void painScaleOpener(View View) {
         Intent intent = new Intent(this, PainScaleActivity.class);
-        startActivityForResult (intent, 1);
+        startActivityForResult(intent, 1);
 
     }
+
     public void stoolRecordOpener(View View) {
         Intent intent = new Intent(this, StoolRecordActivity.class);
-        startActivityForResult (intent, 2);
+        startActivityForResult(intent, 2);
     }
+
     public void editFoodItem(FoodItem item) {
         Intent intent = new Intent(this, FoodDiaryAddEditActivity.class);
         intent.putExtra("foodName", item.getFoodItem());
         intent.putExtra("foodTime", item.getFoodTime().getTime());
-        startActivityForResult (intent, 3);
+        intent.putExtra("isEdit", true);
+        startActivityForResult(intent, 3);
     }
 
     public void addFoodEmpty() {
         Intent intent = new Intent(this, FoodDiaryAddEditActivity.class);
-        startActivityForResult (intent, 3);
+        intent.putExtra("isEdit", false);
+        startActivityForResult(intent, 3);
 //
 //        foodsList.add(new FoodItem("", new Time(System.currentTimeMillis())));
 //        this.foodAdapter.notifyDataSetChanged();
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_new_pain) {
             painScaleOpener(item.getActionView());
-        } else if(id == R.id.nav_stool){
+        } else if (id == R.id.nav_stool) {
             stoolRecordOpener(item.getActionView());
         } else if (id == R.id.nav_stats) {
             //TODO make stats

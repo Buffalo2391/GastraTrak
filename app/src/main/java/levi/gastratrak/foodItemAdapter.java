@@ -24,6 +24,7 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         this.context = context;
         this.items = items;
         this.databaseControllerObject = databaseControlObject;
+        updateFromDatabase();
     }
 
     @Override
@@ -79,7 +80,11 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         holder.foodType.setText(holder.foodObject.getFoodItem());
         holder.foodTime.setText(String.valueOf(holder.foodObject.getFoodTime()));
     }
-
+    public void updateFromDatabase(){
+        items.clear();
+        items.addAll(databaseControllerObject.getAllFoodItems());
+        notifyDataSetChanged();
+    }
 
     public static class foodItemHolder {
         FoodItem foodObject;

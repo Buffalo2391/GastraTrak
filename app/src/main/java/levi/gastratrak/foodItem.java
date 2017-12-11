@@ -42,4 +42,8 @@ public class FoodItem {
         return false;
 
     }
+
+    public long greaterthan(FoodItem item){
+        return item.getFoodTime().getTime() - this.getFoodTime().getTime();
+    }
 }
