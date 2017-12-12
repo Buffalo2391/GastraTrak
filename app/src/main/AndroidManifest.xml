@@ -46,7 +46,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".GraphingModeActivity"></activity>
+        <activity android:name=".GraphingModeActivity" />
+        <activity
+            android:name=".GraphAddEditActivity"
+            android:parentActivityName=".GraphingModeActivity">
+
+        </activity>
     </application>
 
 </manifest>

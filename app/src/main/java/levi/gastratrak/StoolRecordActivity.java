@@ -9,8 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 
+import java.sql.Time;
+
 public class StoolRecordActivity extends AppCompatActivity {
 
+    DatabaseController db = new DatabaseController(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,9 +43,7 @@ public class StoolRecordActivity extends AppCompatActivity {
         SeekBar wetnessSeeker = findViewById(R.id.wetnessSeeker);
         SeekBar difficultySeeker = findViewById(R.id.difficultySeeker);
         int[] stoolArray = new int[] {consistencySeeker.getProgress(),wetnessSeeker.getProgress(),difficultySeeker.getProgress()};
-        Intent output = new Intent();
-        output.putExtra("StoolArray", stoolArray);
-        setResult(RESULT_OK, output);
+        db.addStoolRecording(new StoolItem(stoolArray, new Time(System.currentTimeMillis())));
         finish();
     }
 }

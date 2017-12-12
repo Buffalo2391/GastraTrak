@@ -17,13 +17,12 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
     private ArrayList<FoodItem> items;
     private int layoutResourceId;
     private Context context;
-    private DatabaseController databaseControllerObject;
-    public FoodItemAdapter(Context context, int layoutResourceId, ArrayList<FoodItem> items, DatabaseController databaseControlObject) {
+    private DatabaseController db = new DatabaseController(this.getContext());
+    public FoodItemAdapter(Context context, int layoutResourceId, ArrayList<FoodItem> items) {
         super(context, layoutResourceId, items);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.items = items;
-        this.databaseControllerObject = databaseControlObject;
         updateFromDatabase();
     }
 
@@ -50,28 +49,6 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
                 ((MainActivity) context).editFoodItem(items.get(position));
             }
         });
-        holder.foodType.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                //remove old item
-                databaseControllerObject.removeFoodItem(items.get(position));
-                items.get(position).setFoodItem(editable.toString());
-                databaseControllerObject.addFoodItem(items.get(position));
-
-
-            }
-        });
         return row;
     }
 
@@ -82,7 +59,7 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
     }
     public void updateFromDatabase(){
         items.clear();
-        items.addAll(databaseControllerObject.getAllFoodItems());
+        items.addAll(db.getAllFoodItems());
         notifyDataSetChanged();
     }
 

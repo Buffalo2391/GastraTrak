@@ -14,8 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-
-import java.sql.Time;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
@@ -23,7 +21,6 @@ public class MainActivity extends AppCompatActivity
 
     ArrayList<FoodItem> foodsList = new ArrayList<>();
     FoodItemAdapter foodAdapter;
-    DatabaseController db = new DatabaseController(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +39,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        foodAdapter = new FoodItemAdapter(MainActivity.this, R.layout.food_diary_entry, foodsList, db);
+        foodAdapter = new FoodItemAdapter(MainActivity.this, R.layout.food_diary_entry, foodsList);
         ListView foodDiaryView = findViewById(R.id.foodDiary_list);
         foodDiaryView.setAdapter(foodAdapter);
 
@@ -67,22 +64,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            db.addPainRecording(new PainItem(data.getIntArrayExtra("PainArray"), new Time(System.currentTimeMillis())));
-        } else if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
-            db.addStoolRecording(new StoolItem(data.getIntArrayExtra("StoolArray"), new Time(System.currentTimeMillis())));
-        } else if (requestCode == 3 && resultCode == RESULT_OK && data != null) {
-            FoodItem item = new FoodItem(data.getStringExtra("foodName"), new Time(data.getLongExtra("foodTime", 0)));
-            FoodItem oldItem = new FoodItem(data.getStringExtra("oldFoodName"), new Time(data.getLongExtra("oldFoodTime", 0)));
-            db.removeFoodItem(oldItem);
-            db.addFoodItem(item);
-            foodAdapter.updateFromDatabase();
-        } else if (requestCode == 3 && resultCode == RESULT_CANCELED && data != null) {
-            FoodItem item = new FoodItem(data.getStringExtra("oldFoodName"), new Time(data.getLongExtra("oldFoodTime", 0)));
-            db.removeFoodItem(item);
-            foodAdapter.updateFromDatabase();
-        }
+        foodAdapter.updateFromDatabase();
     }
+
 
     public void painScaleOpener(View View) {
         Intent intent = new Intent(this, PainScaleActivity.class);
@@ -95,7 +79,7 @@ public class MainActivity extends AppCompatActivity
 
     public void stoolRecordOpener(View View) {
         Intent intent = new Intent(this, StoolRecordActivity.class);
-        startActivityForResult(intent, 2);
+        startActivity(intent);
     }
 
     public void editFoodItem(FoodItem item) {
@@ -103,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra("foodName", item.getFoodItem());
         intent.putExtra("foodTime", item.getFoodTime().getTime());
         intent.putExtra("isEdit", true);
-        startActivityForResult(intent, 3);
+        startActivityForResult(intent, 1);
     }
 
     public void addFoodEmpty() {
@@ -124,7 +108,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action bar oldItem clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
@@ -140,12 +124,12 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle navigation view oldItem clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_food_diary) {
             // return to the main, not sure if going to implement
-            
+
         } else if (id == R.id.nav_new_pain) {
             painScaleOpener(item.getActionView());
         } else if (id == R.id.nav_stool) {

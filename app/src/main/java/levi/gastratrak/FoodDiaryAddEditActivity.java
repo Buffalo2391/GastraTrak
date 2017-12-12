@@ -1,8 +1,6 @@
 package levi.gastratrak;
 
 import android.content.Intent;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,18 +9,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
-import android.widget.Toolbar;
 
 import java.sql.Time;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 
 public class FoodDiaryAddEditActivity extends AppCompatActivity {
-    FoodItem item;
+    FoodItem oldItem;
+    DatabaseController db = new DatabaseController(this);
+    boolean isEdit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +28,8 @@ public class FoodDiaryAddEditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String oldItemName = intent.getStringExtra("foodName");
         long oldItemTime = intent.getLongExtra("foodTime", System.currentTimeMillis());
-        boolean isEdit = intent.getBooleanExtra("isEdit", true);
-        item = new FoodItem(oldItemName, new Time(oldItemTime));
+        this.isEdit = intent.getBooleanExtra("isEdit", true);
+        oldItem = new FoodItem(oldItemName, new Time(oldItemTime));
         Calendar cal = Calendar.getInstance();
         cal.setTimeZone(TimeZone.getDefault());
         cal.setTimeInMillis(oldItemTime);
@@ -72,10 +67,8 @@ public class FoodDiaryAddEditActivity extends AppCompatActivity {
         }
     }
     private  void deleteButtonPressed() {
-        Intent output = new Intent();
-        output.putExtra("oldFoodName", item.getFoodItem());
-        output.putExtra("oldFoodTime", item.getFoodTime().getTime());
-        setResult(RESULT_CANCELED, output);
+        db.removeFoodItem(this.oldItem);
+        setResult(RESULT_CANCELED);
         finish();
     }
     private void saveButtonPressed() {
@@ -87,12 +80,12 @@ public class FoodDiaryAddEditActivity extends AppCompatActivity {
         cal.set(Calendar.HOUR_OF_DAY, foodTime.getHour());
         cal.set(Calendar.MINUTE, foodTime.getMinute());
         cal.set(Calendar.SECOND, 0);
-        Intent output = new Intent();
-        output.putExtra("foodName", foodName.getText().toString());
-        output.putExtra("foodTime", cal.getTimeInMillis());
-        output.putExtra("oldFoodName", item.getFoodItem());
-        output.putExtra("oldFoodTime", item.getFoodTime().getTime());
-        setResult(RESULT_OK, output);
+        FoodItem item = new FoodItem(foodName.getText().toString(), new Time(cal.getTimeInMillis()));
+        if(isEdit){
+            db.removeFoodItem(this.oldItem);
+        }
+        db.addFoodItem(item);
+        setResult(RESULT_OK);
         finish();
     }
 }

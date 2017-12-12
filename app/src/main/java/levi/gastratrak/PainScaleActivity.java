@@ -13,6 +13,7 @@ import java.sql.Time;
 
 public class PainScaleActivity extends AppCompatActivity {
 
+    DatabaseController db = new DatabaseController(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +44,7 @@ public class PainScaleActivity extends AppCompatActivity {
         SeekBar upperPainSeeker = findViewById(R.id.upperGutPainSeeker);
         SeekBar lowerPainSeeker = findViewById(R.id.lowerGutPainSeeker);
         int[] painArray = new int[] {totalPainSeeker.getProgress(),otherPainSeeker.getProgress(),upperPainSeeker.getProgress(),lowerPainSeeker.getProgress()};
-        Intent output = new Intent();
-        output.putExtra("PainArray", painArray);
-        setResult(RESULT_OK, output);
+        db.addPainRecording(new PainItem(painArray, new Time(System.currentTimeMillis())));
         finish();
     }
 

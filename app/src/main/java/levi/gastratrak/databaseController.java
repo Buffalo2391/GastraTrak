@@ -14,7 +14,7 @@ public class DatabaseController extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     // Database Name
     private static final String DATABASE_NAME = "pain_and_food_diary";
@@ -35,7 +35,7 @@ public class DatabaseController extends SQLiteOpenHelper {
     // Food Table Columns names
     private static final String KEY_FOOD_ID = "id";
     private static final String KEY_FOOD_TIME = "time"; //long - standard time format(milliseconds since 1970)
-    private static final String KEY_FOOD_ITEM = "item";
+    private static final String KEY_FOOD_ITEM = "oldItem";
 
     // Stool Table Columns names
     private static final String KEY_STOOL_ID = "id";
@@ -144,6 +144,34 @@ public class DatabaseController extends SQLiteOpenHelper {
         db.insert(TABLE_PAIN, null, values);
         db.close();
     }
+    public ArrayList<PainItem> getAllPainItems() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<PainItem> result = new ArrayList<>();
+
+        try {
+            // Select All Query
+            String selectQuery = "SELECT  * FROM " + TABLE_PAIN;
+
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    int[] painArray = new int[] {cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5)};
+                    PainItem item = new PainItem(painArray, new Time(cursor.getLong(1)));
+                    result.add(item);
+                } while (cursor.moveToNext());
+            }
+
+            // return contact list
+            cursor.close();
+            db.close();
+            return result;
+        } catch (Exception e) {
+            Log.e("allpainitems", "" + e);
+        }
+
+        return result;
+    }
+
 
 
     public void addStoolRecording(StoolItem item) {
