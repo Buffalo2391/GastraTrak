@@ -2,22 +2,22 @@ package levi.gastratrak;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.v4.view.GravityCompat;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 
 public class GraphingModeActivity extends AppCompatActivity {
 
-    DatabaseController db = new DatabaseController(this);
+    private final DatabaseController db = new DatabaseController(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

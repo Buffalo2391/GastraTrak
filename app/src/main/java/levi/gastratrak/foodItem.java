@@ -2,10 +2,10 @@ package levi.gastratrak;
 import java.sql.Time;
 
 /**
- * Created by Levi on 17/11/2017.
+ * Created by Levi on 17/11/2017. a class to hold information regarding food items
  */
 
-public class FoodItem {
+class FoodItem {
     private String foodItem = "";
     private Time foodTime = null;
 
@@ -14,11 +14,11 @@ public class FoodItem {
         this.setItemTime(time);
     }
 
-    public void setFoodItem(String foodItem) {
+    private void setFoodItem(String foodItem) {
         this.foodItem = foodItem;
     }
 
-    public void setItemTime(Time foodTime) {
+    private void setItemTime(Time foodTime) {
         this.foodTime = foodTime;
     }
 
@@ -32,18 +32,9 @@ public class FoodItem {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() != FoodItem.class) {
-            return false;
-        }
-        if (((FoodItem) obj).getFoodItem() == this.getFoodItem() &&
-                ((FoodItem) obj).getFoodTime() == this.getFoodTime()) {
-                return true;
-            }
-        return false;
-
+        return obj.getClass() == FoodItem.class &&
+                ((FoodItem) obj).getFoodItem().equals(this.getFoodItem()) &&
+                ((FoodItem) obj).getFoodTime().equals(this.getFoodTime());
     }
 
-    public long greaterthan(FoodItem item){
-        return item.getFoodTime().getTime() - this.getFoodTime().getTime();
-    }
 }

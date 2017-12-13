@@ -10,7 +10,7 @@ import android.util.Log;
 import java.sql.Time;
 import java.util.ArrayList;
 
-public class DatabaseController extends SQLiteOpenHelper {
+class DatabaseController extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version

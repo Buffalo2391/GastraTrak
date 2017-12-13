@@ -2,8 +2,7 @@ package levi.gastratrak;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.annotation.NonNull;
 import android.view.*;
 import android.widget.*;
 import java.util.ArrayList;
@@ -12,22 +11,23 @@ import java.util.ArrayList;
  * Created by Levi on 17/11/2017. Adapter for food items on food diary
  */
 
-public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
+class FoodItemAdapter extends ArrayAdapter<FoodItem> {
 
-    private ArrayList<FoodItem> items;
-    private int layoutResourceId;
-    private Context context;
-    private DatabaseController db = new DatabaseController(this.getContext());
-    public FoodItemAdapter(Context context, int layoutResourceId, ArrayList<FoodItem> items) {
-        super(context, layoutResourceId, items);
-        this.layoutResourceId = layoutResourceId;
+    private final ArrayList<FoodItem> items;
+    private final int layoutResourceId;
+    private final Context context;
+    private final DatabaseController db = new DatabaseController(this.getContext());
+    public FoodItemAdapter(Context context, ArrayList<FoodItem> items) {
+        super(context, R.layout.food_diary_entry, items);
+        this.layoutResourceId = R.layout.food_diary_entry;
         this.context = context;
         this.items = items;
         updateFromDatabase();
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View row, final ViewGroup parent) {
+    public View getView(final int position, View row, @NonNull final ViewGroup parent) {
 
         foodItemHolder holder;
 

@@ -3,6 +3,7 @@ package levi.gastratrak;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,8 +20,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ArrayList<FoodItem> foodsList = new ArrayList<>();
-    FoodItemAdapter foodAdapter;
+    private final ArrayList<FoodItem> foodsList = new ArrayList<>();
+    private FoodItemAdapter foodAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        foodAdapter = new FoodItemAdapter(MainActivity.this, R.layout.food_diary_entry, foodsList);
+        foodAdapter = new FoodItemAdapter(MainActivity.this, foodsList);
         ListView foodDiaryView = findViewById(R.id.foodDiary_list);
         foodDiaryView.setAdapter(foodAdapter);
 
@@ -68,16 +69,16 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void painScaleOpener(View View) {
+    private void painScaleOpener() {
         Intent intent = new Intent(this, PainScaleActivity.class);
         startActivityForResult(intent, 1);
     }
-    public void graphModeOpener(View View) {
+    private void graphModeOpener() {
         Intent intent = new Intent(this, GraphingModeActivity.class);
         startActivity(intent);
     }
 
-    public void stoolRecordOpener(View View) {
+    private void stoolRecordOpener() {
         Intent intent = new Intent(this, StoolRecordActivity.class);
         startActivity(intent);
     }
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, 1);
     }
 
-    public void addFoodEmpty() {
+    private void addFoodEmpty() {
         Intent intent = new Intent(this, FoodDiaryAddEditActivity.class);
         intent.putExtra("isEdit", false);
         startActivityForResult(intent, 3);
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view oldItem clicks here.
         int id = item.getItemId();
 
@@ -131,13 +132,13 @@ public class MainActivity extends AppCompatActivity
             // return to the main, not sure if going to implement
 
         } else if (id == R.id.nav_new_pain) {
-            painScaleOpener(item.getActionView());
+            painScaleOpener();
         } else if (id == R.id.nav_stool) {
-            stoolRecordOpener(item.getActionView());
+            stoolRecordOpener();
         } else if (id == R.id.nav_stats) {
             //TODO make stats
         } else if (id == R.id.nav_graphing) {
-            graphModeOpener(item.getActionView());
+            graphModeOpener();
         } else if (id == R.id.nav_send) {
             //TODO export database
         }

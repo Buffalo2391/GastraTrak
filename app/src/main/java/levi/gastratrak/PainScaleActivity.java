@@ -1,19 +1,16 @@
 package levi.gastratrak;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.SeekBar;
 
 import java.sql.Time;
 
 public class PainScaleActivity extends AppCompatActivity {
 
-    DatabaseController db = new DatabaseController(this);
+    private final DatabaseController db = new DatabaseController(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

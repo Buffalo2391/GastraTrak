@@ -2,10 +2,10 @@ package levi.gastratrak;
 import java.sql.Time;
 
 /**
- * Created by Levi on 17/11/2017.
+ * Created by Levi on 17/11/2017. Holder for pain information
  */
 
-public class PainItem {
+class PainItem {
     private Time recordedTime = null;
     private int[] painArray;
 
@@ -14,13 +14,13 @@ public class PainItem {
         this.setPainLevel(painArray);
         this.setPainTime(time);
     }
-    public void setPainLevel(int[] painArray){
+    private void setPainLevel(int[] painArray){
         this.painArray = painArray.clone();
     }
     public int[] getPainLevel(){
         return this.painArray;
     }
-    public void setPainTime(Time time){
+    private void setPainTime(Time time){
         this.recordedTime = time;
     }
     public Time getPainTime(){

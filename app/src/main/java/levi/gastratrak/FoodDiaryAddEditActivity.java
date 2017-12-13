@@ -15,9 +15,9 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class FoodDiaryAddEditActivity extends AppCompatActivity {
-    FoodItem oldItem;
-    DatabaseController db = new DatabaseController(this);
-    boolean isEdit;
+    private FoodItem oldItem;
+    private final DatabaseController db = new DatabaseController(this);
+    private boolean isEdit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
