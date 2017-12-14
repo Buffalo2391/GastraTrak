@@ -1,13 +1,15 @@
 package levi.gastratrak;
 
+
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
@@ -15,15 +17,34 @@ import com.jjoe64.graphview.series.DataPoint;
 
 import java.util.ArrayList;
 
-public class GraphingModeActivity extends AppCompatActivity {
 
-    private final DatabaseController db = new DatabaseController(this);
+public class GraphFragment extends Fragment {
+
+    private DatabaseController db;
+    private View view;
+    private OnFragmentInteractionListener mListener;
+
+    public GraphFragment() {
+        // Required empty public constructor
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_graphing_mode);
-        GraphView graph = findViewById(R.id.graph);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        this.view = inflater.inflate(R.layout.content_graph, container, false);
+        return view;
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        GraphView graph = view.findViewById(R.id.graph);
         ArrayList<PainItem> painArray = new ArrayList<>();
         painArray.addAll(db.getAllPainItems());
         DataPoint[] totalPainValues = new DataPoint[painArray.size()];
@@ -31,10 +52,10 @@ public class GraphingModeActivity extends AppCompatActivity {
         DataPoint[] upperPainValues = new DataPoint[painArray.size()];
         DataPoint[] lowerPainValues = new DataPoint[painArray.size()];
         for (int i = 0; i < painArray.size(); i++) {
-            totalPainValues[i] = new DataPoint(i+1, painArray.get(i).getPainLevel()[0]);
-            otherPainValues[i] = new DataPoint(i+1, painArray.get(i).getPainLevel()[1]);
-            upperPainValues[i] = new DataPoint(i+1, painArray.get(i).getPainLevel()[2]);
-            lowerPainValues[i] = new DataPoint(i+1, painArray.get(i).getPainLevel()[3]);
+            totalPainValues[i] = new DataPoint(i + 1, painArray.get(i).getPainLevel()[0]);
+            otherPainValues[i] = new DataPoint(i + 1, painArray.get(i).getPainLevel()[1]);
+            upperPainValues[i] = new DataPoint(i + 1, painArray.get(i).getPainLevel()[2]);
+            lowerPainValues[i] = new DataPoint(i + 1, painArray.get(i).getPainLevel()[3]);
         }
         BarGraphSeries<DataPoint> painTotal = new BarGraphSeries<>(totalPainValues);
         BarGraphSeries<DataPoint> painOther = new BarGraphSeries<>(otherPainValues);
@@ -61,5 +82,28 @@ public class GraphingModeActivity extends AppCompatActivity {
         graph.getViewport().setMinX(0);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setYAxisBoundsManual(true);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        db = new DatabaseController(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: figure it out eh
+        void onFragmentInteraction(Uri uri);
     }
 }

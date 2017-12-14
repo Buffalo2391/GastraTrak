@@ -17,11 +17,13 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
     private final int layoutResourceId;
     private final Context context;
     private final DatabaseController db = new DatabaseController(this.getContext());
-    public FoodItemAdapter(Context context, ArrayList<FoodItem> items) {
+    private FoodDiaryFragment fragItem;
+    public FoodItemAdapter(Context context, ArrayList<FoodItem> items, FoodDiaryFragment fragItem) {
         super(context, R.layout.food_diary_entry, items);
         this.layoutResourceId = R.layout.food_diary_entry;
         this.context = context;
         this.items = items;
+        this.fragItem = fragItem;
         updateFromDatabase();
     }
 
@@ -46,7 +48,7 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         holder.foodButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                ((MainActivity) context).editFoodItem(items.get(position));
+                fragItem.editFoodItem(items.get(position));
             }
         });
         return row;
