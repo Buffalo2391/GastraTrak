@@ -14,7 +14,7 @@
             android:title="New Pain Recording" />
         <item
             android:id="@+id/nav_stool"
-            android:icon="@drawable/ic_wc_black_24dp"
+            android:icon="?android:attr/textSelectHandle"
             android:title="Record Stool" />
         <item
             android:id="@+id/nav_graphing"

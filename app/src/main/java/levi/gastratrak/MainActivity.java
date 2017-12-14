@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, 1);
     }
     private void graphModeOpener() {
-        Intent intent = new Intent(this, GraphingModeActivity.class);
+        Intent intent = new Intent(this, GraphActivity.class);
         startActivity(intent);
     }
 
@@ -95,9 +95,6 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, FoodDiaryAddEditActivity.class);
         intent.putExtra("isEdit", false);
         startActivityForResult(intent, 3);
-//
-//        foodsList.add(new FoodItem("", new Time(System.currentTimeMillis())));
-//        this.foodAdapter.notifyDataSetChanged();
     }
 
     @Override

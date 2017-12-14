@@ -49,9 +49,11 @@
         <activity android:name=".GraphingModeActivity" />
         <activity
             android:name=".GraphAddEditActivity"
-            android:parentActivityName=".GraphingModeActivity">
-
-        </activity>
+            android:parentActivityName=".GraphingModeActivity"></activity>
+        <activity
+            android:name=".GraphActivity"
+            android:label="@string/title_activity_graph"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
