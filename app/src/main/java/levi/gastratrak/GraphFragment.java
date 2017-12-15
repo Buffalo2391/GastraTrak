@@ -65,10 +65,10 @@ public class GraphFragment extends Fragment {
         Paint otherColor = new Paint();
         Paint upperColor = new Paint();
         Paint lowerColor = new Paint();
-        totalColor.setColor(Color.BLACK);
+        totalColor.setColor(Color.YELLOW);
         otherColor.setColor(Color.BLUE);
         upperColor.setColor(Color.RED);
-        lowerColor.setColor(Color.MAGENTA);
+        lowerColor.setColor(Color.BLACK);
         painTotal.setCustomPaint(totalColor);
         painOther.setCustomPaint(otherColor);
         painUpper.setCustomPaint(upperColor);

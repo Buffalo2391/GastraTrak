@@ -186,4 +186,31 @@ class DatabaseController extends SQLiteOpenHelper {
         db.insert(TABLE_STOOL, null, values);
         db.close();
     }
+    public ArrayList<StoolItem> getAllStoolItems() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<StoolItem> result = new ArrayList<>();
+
+        try {
+            // Select All Query
+            String selectQuery = "SELECT  * FROM " + TABLE_STOOL;
+
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    int[] stoolArray = new int[] {cursor.getInt(2),cursor.getInt(3),cursor.getInt(4)};
+                    StoolItem item = new StoolItem(stoolArray, new Time(cursor.getLong(1)));
+                    result.add(item);
+                } while (cursor.moveToNext());
+            }
+
+            // return contact list
+            cursor.close();
+            db.close();
+            return result;
+        } catch (Exception e) {
+            Log.e("allpainitems", "" + e);
+        }
+
+        return result;
+    }
 }
