@@ -50,22 +50,31 @@ class DatabaseController extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_PAIN_TABLE = "CREATE TABLE " + TABLE_PAIN + "(" + KEY_PAIN_ID +
-                " INTEGER PRIMARY KEY," + KEY_PAIN_TIME +
-                " INTEGER, " + KEY_PAIN_TOTAL + " INTEGER, " + KEY_PAIN_OTHER + " INTEGER, " +
-                KEY_PAIN_UPPER + " INTEGER, " + KEY_PAIN_LOWER + " INTEGER )";
+        String CREATE_PAIN_TABLE =
+                "CREATE TABLE " + TABLE_PAIN + "(" +
+                        KEY_PAIN_ID + " INTEGER PRIMARY KEY," +
+                        KEY_PAIN_TIME + " INTEGER, " +
+                        KEY_PAIN_TOTAL + " INTEGER, " +
+                        KEY_PAIN_OTHER + " INTEGER, " +
+                        KEY_PAIN_UPPER + " INTEGER, " +
+                        KEY_PAIN_LOWER + " INTEGER )";
 
-        String CREATE_FOOD_TABLE = "CREATE TABLE " + TABLE_FOOD + " ( " + KEY_FOOD_ID +
-                " INTEGER PRIMARY KEY, " + KEY_FOOD_TIME +
-                " INTEGER, " + KEY_FOOD_ITEM + " TEXT )";
+        String CREATE_FOOD_TABLE =
+                "CREATE TABLE " + TABLE_FOOD + " ( " +
+                        KEY_FOOD_ID + " INTEGER PRIMARY KEY, " +
+                        KEY_FOOD_TIME + " INTEGER, " +
+                        KEY_FOOD_ITEM + " TEXT )";
 
-        String CREATE_STOOL_TABLE = "CREATE TABLE " + TABLE_STOOL + "(" + KEY_STOOL_ID +
-                " INTEGER PRIMARY KEY, " + KEY_STOOL_TIME +
-                " INTEGER, " + KEY_STOOL_CONSISTENCY + " INTEGER, " + KEY_STOOL_WETNESS + " INTEGER, " +
-                KEY_STOOL_DIFFICULTY + " INTEGER )";
+
+        String CREATE_STOOL_TABLE =
+                "CREATE TABLE " + TABLE_STOOL + "(" +
+                        KEY_STOOL_ID + " INTEGER PRIMARY KEY, " +
+                        KEY_STOOL_TIME + " INTEGER, " +
+                        KEY_STOOL_CONSISTENCY + " INTEGER, " +
+                        KEY_STOOL_WETNESS + " INTEGER, " +
+                        KEY_STOOL_DIFFICULTY + " INTEGER )";
 
         db.execSQL(CREATE_PAIN_TABLE);
         db.execSQL(CREATE_FOOD_TABLE);
@@ -74,7 +83,6 @@ class DatabaseController extends SQLiteOpenHelper {
 
     }
 
-    // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Not currently saving old database on upgrade. Had some issues with debugging entries
@@ -84,152 +92,117 @@ class DatabaseController extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_STOOL);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PAIN);
-
-        // Create tables again
         onCreate(db);
     }
 
     public void addFoodItem(FoodItem item) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(KEY_FOOD_TIME, item.getFoodTime().getTime()); // Time Consumed
-        values.put(KEY_FOOD_ITEM, item.getFoodItem()); // Food Name
-
-        db.insert(TABLE_FOOD, null, values);
-        db.close();
+        try(SQLiteDatabase db = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(KEY_FOOD_TIME, item.getFoodTime().getTime()); // Time Consumed
+            values.put(KEY_FOOD_ITEM, item.getFoodItem()); // Food Name
+            db.insert(TABLE_FOOD, null, values);
+        }
     }
 
     public void removeFoodItem(FoodItem item) {
-        SQLiteDatabase db = this.getWritableDatabase();
 
-        db.delete(TABLE_FOOD, KEY_FOOD_ITEM + " = ?", new String[]{item.getFoodItem()});
-        db.close();
-}
+        try(SQLiteDatabase db = this.getWritableDatabase()) {
+            db.delete(TABLE_FOOD, KEY_FOOD_ITEM + " = ? AND ", new String[]{item.getFoodItem()});
+        }
+    }
 
     public ArrayList<FoodItem> getAllFoodItems() {
-        SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<FoodItem> result = new ArrayList<>();
-
-        try {
-            // Select All Query
-            String selectQuery = "SELECT  * FROM " + TABLE_FOOD;
-
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    FoodItem item = new FoodItem(cursor.getString(2), new Time(cursor.getLong(1)));
-                    result.add(item);
-                } while (cursor.moveToNext());
+        String selectQuery = "SELECT  * FROM " + TABLE_FOOD;
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            try (Cursor cursor = db.rawQuery(selectQuery, null)) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        FoodItem item = new FoodItem(cursor.getString(2), new Time(cursor.getLong(1)));
+                        result.add(item);
+                    } while (cursor.moveToNext());
+                }
             }
-
-            // return contact list
-            cursor.close();
-            db.close();
-            return result;
         } catch (Exception e) {
             Log.e("allfooditems", "" + e);
         }
 
         return result;
     }
+
     public ArrayList<FoodItem> getDateFoodItems(Calendar startCalendar, Calendar endCalendar) {
-        SQLiteDatabase db = this.getReadableDatabase();
+
         ArrayList<FoodItem> result = new ArrayList<>();
         long startTimeLong = startCalendar.getTimeInMillis();
         long endTimeLong = endCalendar.getTimeInMillis();
-        try {
-            // Select All Query
-            String selectQuery = "SELECT  * FROM " + TABLE_FOOD + " WHERE "+KEY_FOOD_TIME +" > " +
-                    startTimeLong + " AND " + KEY_FOOD_TIME + " < " + endTimeLong;
+        String selectQuery = "SELECT  * FROM " + TABLE_FOOD + " WHERE " + KEY_FOOD_TIME + " > " +
+                startTimeLong + " AND " + KEY_FOOD_TIME + " < " + endTimeLong;
 
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    FoodItem item = new FoodItem(cursor.getString(2), new Time(cursor.getLong(1)));
-                    result.add(item);
-                } while (cursor.moveToNext());
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            try (Cursor cursor = db.rawQuery(selectQuery, null)) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        FoodItem item = new FoodItem(cursor.getString(2), new Time(cursor.getLong(1)));
+                        result.add(item);
+                    } while (cursor.moveToNext());
+                }
             }
-
-            // return contact list
-            cursor.close();
-            db.close();
-            return result;
         } catch (Exception e) {
             Log.e("date food items", "" + e);
         }
-
         return result;
     }
 
 
     public void addPainRecording(PainItem item) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int[] painArray = item.getPainLevel();
-        ContentValues values = new ContentValues();
-
-        values.put(KEY_PAIN_TIME, item.getPainTime().getTime()); // Time recorded
-        values.put(KEY_PAIN_TOTAL, painArray[0]);
-        values.put(KEY_PAIN_OTHER, painArray[1]);
-        values.put(KEY_PAIN_UPPER, painArray[2]);
-        values.put(KEY_PAIN_LOWER, painArray[3]);
-        db.insert(TABLE_PAIN, null, values);
-        db.close();
+        try(SQLiteDatabase db = this.getWritableDatabase()) {
+            int[] painArray = item.getPainLevel();
+            ContentValues values = new ContentValues();
+            values.put(KEY_PAIN_TIME, item.getPainTime().getTime()); // Time recorded
+            values.put(KEY_PAIN_TOTAL, painArray[0]);
+            values.put(KEY_PAIN_OTHER, painArray[1]);
+            values.put(KEY_PAIN_UPPER, painArray[2]);
+            values.put(KEY_PAIN_LOWER, painArray[3]);
+            db.insert(TABLE_PAIN, null, values);
+        }
     }
 
     public ArrayList<PainItem> getAllPainItems() {
-        SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<PainItem> result = new ArrayList<>();
-
-        try {
-            // Select All Query
-            String selectQuery = "SELECT  * FROM " + TABLE_PAIN;
-
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    int[] painArray = new int[] {cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5)};
-                    PainItem item = new PainItem(painArray, new Time(cursor.getLong(1)));
-                    result.add(item);
-                } while (cursor.moveToNext());
+        String selectQuery = "SELECT  * FROM " + TABLE_PAIN;
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            try (Cursor cursor = db.rawQuery(selectQuery, null)) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        int[] painArray = new int[]{cursor.getInt(2), cursor.getInt(3), cursor.getInt(4), cursor.getInt(5)};
+                        PainItem item = new PainItem(painArray, new Time(cursor.getLong(1)));
+                        result.add(item);
+                    } while (cursor.moveToNext());
+                }
             }
-
-            // return contact list
-            cursor.close();
-            db.close();
-            return result;
         } catch (Exception e) {
             Log.e("allpainitems", "" + e);
         }
-
         return result;
     }
 
     public ArrayList<PainItem> getDatePainItems(Calendar startCalendar, Calendar endCalendar) {
-        SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<PainItem> result = new ArrayList<>();
         Long startTimeLong = startCalendar.getTimeInMillis();
-        Long endTimeLong = endCalendar.getTimeInMillis(); //startTimeLong+86400000;
+        Long endTimeLong = endCalendar.getTimeInMillis();
+        String selectQuery = "SELECT  * FROM " + TABLE_PAIN + "WHERE " + KEY_PAIN_TIME + " > " +
+                startTimeLong + " AND " + KEY_PAIN_TIME + " < " + endTimeLong;
 
-        String selectQuery = "SELECT  * FROM " + TABLE_PAIN + "WHERE "+KEY_PAIN_TIME +" > " +
-                startTimeLong + " AND " + KEY_PAIN_TIME + " < "+endTimeLong;
-        try {
-            // Select All Query
-
-
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    int[] painArray = new int[] {cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5)};
-                    PainItem item = new PainItem(painArray, new Time(cursor.getLong(1)));
-                    result.add(item);
-                } while (cursor.moveToNext());
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            try (Cursor cursor = db.rawQuery(selectQuery, null)) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        int[] painArray = new int[]{cursor.getInt(2), cursor.getInt(3), cursor.getInt(4), cursor.getInt(5)};
+                        PainItem item = new PainItem(painArray, new Time(cursor.getLong(1)));
+                        result.add(item);
+                    } while (cursor.moveToNext());
+                }
             }
-
-            // return contact list
-            cursor.close();
-            db.close();
-            return result;
         } catch (Exception e) {
             Log.e("allpainitems", "" + e);
         }
@@ -250,27 +223,20 @@ class DatabaseController extends SQLiteOpenHelper {
         db.insert(TABLE_STOOL, null, values);
         db.close();
     }
+
     public ArrayList<StoolItem> getAllStoolItems() {
-        SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<StoolItem> result = new ArrayList<>();
-
-        try {
-            // Select All Query
-            String selectQuery = "SELECT  * FROM " + TABLE_STOOL;
-
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    int[] stoolArray = new int[] {cursor.getInt(2),cursor.getInt(3),cursor.getInt(4)};
-                    StoolItem item = new StoolItem(stoolArray, new Time(cursor.getLong(1)));
-                    result.add(item);
-                } while (cursor.moveToNext());
+        String selectQuery = "SELECT  * FROM " + TABLE_STOOL;
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            try (Cursor cursor = db.rawQuery(selectQuery, null)) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        int[] stoolArray = new int[]{cursor.getInt(2), cursor.getInt(3), cursor.getInt(4)};
+                        StoolItem item = new StoolItem(stoolArray, new Time(cursor.getLong(1)));
+                        result.add(item);
+                    } while (cursor.moveToNext());
+                }
             }
-
-            // return contact list
-            cursor.close();
-            db.close();
-            return result;
         } catch (Exception e) {
             Log.e("allpainitems", "" + e);
         }

@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import java.io.IOException;
+
 
 public class MainActivity extends AppCompatActivity
         implements
@@ -77,13 +79,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent e){
-        FoodDiaryFragment f = (FoodDiaryFragment) currentFragment;
-        f.onTouchEvent(e);
-        painScaleOpener();
-        return super.onTouchEvent(e);
-    }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -100,12 +96,13 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
             //TODO export database
         } else if (id == R.id.nav_stats) {
-            //TODO make stats
+            change = currentFragmentClass != StatsFragment.class;
+            currentFragmentClass = StatsFragment.class;
         }
-        if((id == R.id.nav_graphing || id == R.id.nav_food_diary) && change) {
+        if((id == R.id.nav_graphing || id == R.id.nav_food_diary || id == R.id.nav_stats) && change) {
             try {
                 currentFragment = (Fragment) currentFragmentClass.newInstance();
-            } catch (Exception e) {
+            } catch (IllegalAccessException | InstantiationException e) {
                 e.printStackTrace();
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.flContent, currentFragment).commit();
