@@ -7,4 +7,27 @@
     <string name="action_settings">Settings</string>
     <string name="accept">Accept</string>
     <string name="title_activity_graph">GraphActivity</string>
+    <string-array name="entry_type">
+        <item>Pain</item>
+        <item>Stool</item>
+    </string-array>
+
+    <string-array name="stool_info_type">
+        <item>Entries</item>
+        <item>Consistency</item>
+        <item>Wetness</item>
+        <item>Difficulty</item>
+    </string-array>
+    <string-array name="pain_info_type">
+        <item>Entries</item>
+        <item>Total</item>
+        <item>Other</item>
+        <item>Upper Gut</item>
+        <item>Lower Gut</item>
+    </string-array>
+    <string-array name="time_to_focus">
+        <item>This week</item>
+        <item>This month</item>
+        <item>This year</item>
+    </string-array>
 </resources>

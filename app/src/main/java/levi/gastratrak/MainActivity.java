@@ -15,19 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-
-
-
-
-
-
-
+import android.view.MotionEvent;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FoodDiaryFragment.OnFragmentInteractionListener,
+        implements
+        NavigationView.OnNavigationItemSelectedListener,
+        FoodDiaryFragment.OnFragmentInteractionListener,
         GraphFragment.OnFragmentInteractionListener{
+    private java.lang.Class currentFragmentClass = FoodDiaryFragment.class;
+    private Fragment currentFragment = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,11 +73,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e){
+        FoodDiaryFragment f = (FoodDiaryFragment) currentFragment;
+        f.onTouchEvent(e);
+        painScaleOpener();
+        return super.onTouchEvent(e);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -88,30 +90,30 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Fragment fragment = null;
-        Class fragmentClass = null;
+        boolean change = false;
         if (id == R.id.nav_food_diary) {
-            fragmentClass = FoodDiaryFragment.class;
-        } else if (id == R.id.nav_new_pain) {
-            painScaleOpener();
-        } else if (id == R.id.nav_stool) {
-            stoolRecordOpener();
-        } else if (id == R.id.nav_stats) {
-            //TODO make stats
+            change = currentFragmentClass != FoodDiaryFragment.class;
+            currentFragmentClass = FoodDiaryFragment.class;
         } else if (id == R.id.nav_graphing) {
-            fragmentClass = GraphFragment.class;
+            change = currentFragmentClass != GraphFragment.class;
+            currentFragmentClass = GraphFragment.class;
         } else if (id == R.id.nav_send) {
             //TODO export database
+        } else if (id == R.id.nav_stats) {
+            //TODO make stats
         }
-        if(fragmentClass != null) {
+        if((id == R.id.nav_graphing || id == R.id.nav_food_diary) && change) {
             try {
-                fragment = (Fragment) fragmentClass.newInstance();
+                currentFragment = (Fragment) currentFragmentClass.newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.flContent, currentFragment).commit();
+        }
+        if (id == R.id.nav_new_pain) {
+            painScaleOpener();
+        } else if (id == R.id.nav_stool) {
+            stoolRecordOpener();
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -126,6 +128,7 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, PainScaleActivity.class);
         startActivity(intent);
     }
+
     private void stoolRecordOpener() {
         Intent intent = new Intent(this, StoolRecordActivity.class);
         startActivity(intent);

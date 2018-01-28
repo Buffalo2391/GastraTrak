@@ -31,7 +31,6 @@ public class FoodDiaryAddEditActivity extends AppCompatActivity {
         this.isEdit = intent.getBooleanExtra("isEdit", true);
         oldItem = new FoodItem(oldItemName, new Time(oldItemTime));
         Calendar cal = Calendar.getInstance();
-        cal.setTimeZone(TimeZone.getDefault());
         cal.setTimeInMillis(oldItemTime);
         foodTime.setIs24HourView(Boolean.TRUE);
         foodName.setText(oldItemName);
@@ -75,7 +74,6 @@ public class FoodDiaryAddEditActivity extends AppCompatActivity {
         EditText foodName = findViewById(R.id.FoodNameInput);
         TimePicker foodTime = findViewById(R.id.timePicker);
         Calendar cal = Calendar.getInstance();
-        cal.setTimeZone(TimeZone.getDefault());
         cal.setTimeInMillis(System.currentTimeMillis());
         cal.set(Calendar.HOUR_OF_DAY, foodTime.getHour());
         cal.set(Calendar.MINUTE, foodTime.getMinute());

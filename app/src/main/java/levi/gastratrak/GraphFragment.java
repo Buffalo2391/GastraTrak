@@ -2,6 +2,7 @@ package levi.gastratrak;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
@@ -37,13 +39,27 @@ public class GraphFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.view = inflater.inflate(R.layout.content_graph, container, false);
+
         return view;
+
+    }
+
+    public void graphAddEditOpener() {
+        Intent intent = new Intent(this.getContext(), GraphAddEditActivity.class);
+        startActivity(intent);
     }
 
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Button bt = this.view.findViewById(R.id.graphButton);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                graphAddEditOpener();
+            }
+        });
         GraphView graph = view.findViewById(R.id.graph);
         ArrayList<PainItem> painArray = new ArrayList<>();
         painArray.addAll(db.getAllPainItems());
@@ -78,6 +94,7 @@ public class GraphFragment extends Fragment {
         graph.addSeries(painUpper);
         graph.addSeries(painLower);
         graph.getViewport().setMaxY(10);
+        graph.getViewport().setMaxX(10);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMinX(0);
         graph.getViewport().setXAxisBoundsManual(true);
@@ -101,6 +118,7 @@ public class GraphFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 
     public interface OnFragmentInteractionListener {
         // TODO: figure it out eh

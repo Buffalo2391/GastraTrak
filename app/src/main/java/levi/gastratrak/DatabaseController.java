@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 class DatabaseController extends SQLiteOpenHelper {
 
@@ -76,7 +77,10 @@ class DatabaseController extends SQLiteOpenHelper {
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
+        //Not currently saving old database on upgrade. Had some issues with debugging entries
+        // and being able to wipe the database by incrementing the version was helpful for quick testing
+
+        // TODO remove dropping tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_STOOL);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PAIN);
@@ -129,6 +133,34 @@ class DatabaseController extends SQLiteOpenHelper {
 
         return result;
     }
+    public ArrayList<FoodItem> getDateFoodItems(Calendar startCalendar, Calendar endCalendar) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<FoodItem> result = new ArrayList<>();
+        long startTimeLong = startCalendar.getTimeInMillis();
+        long endTimeLong = endCalendar.getTimeInMillis();
+        try {
+            // Select All Query
+            String selectQuery = "SELECT  * FROM " + TABLE_FOOD + " WHERE "+KEY_FOOD_TIME +" > " +
+                    startTimeLong + " AND " + KEY_FOOD_TIME + " < " + endTimeLong;
+
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    FoodItem item = new FoodItem(cursor.getString(2), new Time(cursor.getLong(1)));
+                    result.add(item);
+                } while (cursor.moveToNext());
+            }
+
+            // return contact list
+            cursor.close();
+            db.close();
+            return result;
+        } catch (Exception e) {
+            Log.e("date food items", "" + e);
+        }
+
+        return result;
+    }
 
 
     public void addPainRecording(PainItem item) {
@@ -144,6 +176,7 @@ class DatabaseController extends SQLiteOpenHelper {
         db.insert(TABLE_PAIN, null, values);
         db.close();
     }
+
     public ArrayList<PainItem> getAllPainItems() {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<PainItem> result = new ArrayList<>();
@@ -172,6 +205,37 @@ class DatabaseController extends SQLiteOpenHelper {
         return result;
     }
 
+    public ArrayList<PainItem> getDatePainItems(Calendar startCalendar, Calendar endCalendar) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<PainItem> result = new ArrayList<>();
+        Long startTimeLong = startCalendar.getTimeInMillis();
+        Long endTimeLong = endCalendar.getTimeInMillis(); //startTimeLong+86400000;
+
+        String selectQuery = "SELECT  * FROM " + TABLE_PAIN + "WHERE "+KEY_PAIN_TIME +" > " +
+                startTimeLong + " AND " + KEY_PAIN_TIME + " < "+endTimeLong;
+        try {
+            // Select All Query
+
+
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    int[] painArray = new int[] {cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5)};
+                    PainItem item = new PainItem(painArray, new Time(cursor.getLong(1)));
+                    result.add(item);
+                } while (cursor.moveToNext());
+            }
+
+            // return contact list
+            cursor.close();
+            db.close();
+            return result;
+        } catch (Exception e) {
+            Log.e("allpainitems", "" + e);
+        }
+
+        return result;
+    }
 
 
     public void addStoolRecording(StoolItem item) {

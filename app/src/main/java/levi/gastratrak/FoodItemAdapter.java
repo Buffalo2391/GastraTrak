@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.view.*;
 import android.widget.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Levi on 17/11/2017. Adapter for food items on food diary
@@ -17,6 +18,7 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
     private final int layoutResourceId;
     private final Context context;
     private final DatabaseController db = new DatabaseController(this.getContext());
+    private Calendar displayDate = Calendar.getInstance();
     private FoodDiaryFragment fragItem;
     public FoodItemAdapter(Context context, ArrayList<FoodItem> items, FoodDiaryFragment fragItem) {
         super(context, R.layout.food_diary_entry, items);
@@ -24,7 +26,8 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         this.context = context;
         this.items = items;
         this.fragItem = fragItem;
-        updateFromDatabase();
+        setDisplayDate(Calendar.getInstance());
+
     }
 
     @NonNull
@@ -54,14 +57,23 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         return row;
     }
 
+    private void setDisplayDate(Calendar calendar){
+        displayDate = (Calendar) calendar.clone();
+        displayDate.set(Calendar.HOUR_OF_DAY, 0);
+        displayDate.set(Calendar.MINUTE, 0);
+        displayDate.set(Calendar.SECOND, 0);
+        updateFromDatabase(displayDate);
+    }
 
     private void setupItem(foodItemHolder holder) {
         holder.foodType.setText(holder.foodObject.getFoodItem());
         holder.foodTime.setText(String.valueOf(holder.foodObject.getFoodTime()));
     }
-    public void updateFromDatabase(){
+    public void updateFromDatabase(Calendar startTime){
         items.clear();
-        items.addAll(db.getAllFoodItems());
+        Calendar endDate = (Calendar)startTime.clone();
+        endDate.setTimeInMillis(startTime.getTimeInMillis()+86400000);
+        items.addAll(db.getDateFoodItems(startTime,endDate));
         notifyDataSetChanged();
     }
 
