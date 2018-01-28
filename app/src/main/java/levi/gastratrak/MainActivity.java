@@ -24,7 +24,8 @@ public class MainActivity extends AppCompatActivity
         implements
         NavigationView.OnNavigationItemSelectedListener,
         FoodDiaryFragment.OnFragmentInteractionListener,
-        GraphFragment.OnFragmentInteractionListener{
+        GraphFragment.OnFragmentInteractionListener,
+        StatsFragment.OnFragmentInteractionListener{
     private java.lang.Class currentFragmentClass = FoodDiaryFragment.class;
     private Fragment currentFragment = null;
     @Override
