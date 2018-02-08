@@ -1,5 +1,6 @@
 package levi.gastratrak;
 import java.sql.Time;
+import java.util.Calendar;
 
 /**
  * Created by Levi on 17/11/2017. a class to hold information regarding food items
@@ -7,9 +8,9 @@ import java.sql.Time;
 
 class FoodItem {
     private String foodItem = "";
-    private Time foodTime = null;
+    private Calendar foodTime = null;
 
-    public FoodItem(String foodName, Time time) {
+    public FoodItem(String foodName, Calendar time) {
         this.setFoodItem(foodName);
         this.setItemTime(time);
     }
@@ -18,11 +19,11 @@ class FoodItem {
         this.foodItem = foodItem;
     }
 
-    private void setItemTime(Time foodTime) {
+    private void setItemTime(Calendar foodTime) {
         this.foodTime = foodTime;
     }
 
-    public Time getFoodTime() {
+    public Calendar getFoodTime() {
         return this.foodTime;
     }
 

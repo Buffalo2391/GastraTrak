@@ -46,7 +46,7 @@ class DatabaseController extends SQLiteOpenHelper {
     private static final String KEY_STOOL_DIFFICULTY = "difficulty";
 
 
-    public DatabaseController(Context context) {
+    DatabaseController(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -95,30 +95,32 @@ class DatabaseController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addFoodItem(FoodItem item) {
+    void addFoodItem(FoodItem item) {
         try(SQLiteDatabase db = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
-            values.put(KEY_FOOD_TIME, item.getFoodTime().getTime()); // Time Consumed
+            values.put(KEY_FOOD_TIME, item.getFoodTime().getTimeInMillis()); // Time Consumed
             values.put(KEY_FOOD_ITEM, item.getFoodItem()); // Food Name
             db.insert(TABLE_FOOD, null, values);
         }
     }
 
-    public void removeFoodItem(FoodItem item) {
+    void removeFoodItem(FoodItem item) {
 
         try(SQLiteDatabase db = this.getWritableDatabase()) {
-            db.delete(TABLE_FOOD, KEY_FOOD_ITEM + " = ? AND ", new String[]{item.getFoodItem()});
+            db.delete(TABLE_FOOD, KEY_FOOD_ITEM + " = ?", new String[]{item.getFoodItem()});
         }
     }
 
-    public ArrayList<FoodItem> getAllFoodItems() {
+    ArrayList<FoodItem> getAllFoodItems() {
         ArrayList<FoodItem> result = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_FOOD;
         try (SQLiteDatabase db = this.getReadableDatabase()) {
             try (Cursor cursor = db.rawQuery(selectQuery, null)) {
                 if (cursor.moveToFirst()) {
                     do {
-                        FoodItem item = new FoodItem(cursor.getString(2), new Time(cursor.getLong(1)));
+                        Calendar time = Calendar.getInstance();
+                        time.setTimeInMillis(cursor.getLong(1));
+                        FoodItem item = new FoodItem(cursor.getString(2), time);
                         result.add(item);
                     } while (cursor.moveToNext());
                 }
@@ -130,7 +132,7 @@ class DatabaseController extends SQLiteOpenHelper {
         return result;
     }
 
-    public ArrayList<FoodItem> getDateFoodItems(Calendar startCalendar, Calendar endCalendar) {
+    ArrayList<FoodItem> getDateFoodItems(Calendar startCalendar, Calendar endCalendar) {
 
         ArrayList<FoodItem> result = new ArrayList<>();
         long startTimeLong = startCalendar.getTimeInMillis();
@@ -142,7 +144,9 @@ class DatabaseController extends SQLiteOpenHelper {
             try (Cursor cursor = db.rawQuery(selectQuery, null)) {
                 if (cursor.moveToFirst()) {
                     do {
-                        FoodItem item = new FoodItem(cursor.getString(2), new Time(cursor.getLong(1)));
+                        Calendar time = Calendar.getInstance();
+                        time.setTimeInMillis(cursor.getLong(1));
+                        FoodItem item = new FoodItem(cursor.getString(2), time);
                         result.add(item);
                     } while (cursor.moveToNext());
                 }
@@ -154,7 +158,7 @@ class DatabaseController extends SQLiteOpenHelper {
     }
 
 
-    public void addPainRecording(PainItem item) {
+    void addPainRecording(PainItem item) {
         try(SQLiteDatabase db = this.getWritableDatabase()) {
             int[] painArray = item.getPainLevel();
             ContentValues values = new ContentValues();
@@ -167,7 +171,7 @@ class DatabaseController extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<PainItem> getAllPainItems() {
+    ArrayList<PainItem> getAllPainItems() {
         ArrayList<PainItem> result = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_PAIN;
         try (SQLiteDatabase db = this.getReadableDatabase()) {
@@ -211,7 +215,7 @@ class DatabaseController extends SQLiteOpenHelper {
     }
 
 
-    public void addStoolRecording(StoolItem item) {
+    void addStoolRecording(StoolItem item) {
         SQLiteDatabase db = this.getWritableDatabase();
         int[] stoolArray = item.getStoolArray();
         ContentValues values = new ContentValues();

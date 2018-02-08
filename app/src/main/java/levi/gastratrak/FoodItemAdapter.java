@@ -66,8 +66,9 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
     }
 
     private void setupItem(foodItemHolder holder) {
+        Calendar time = holder.foodObject.getFoodTime();
         holder.foodType.setText(holder.foodObject.getFoodItem());
-        holder.foodTime.setText(String.valueOf(holder.foodObject.getFoodTime()));
+        holder.foodTime.setText(String.format("%02d:%02d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)));
     }
     public void updateFromDatabase(Calendar startTime){
         items.clear();

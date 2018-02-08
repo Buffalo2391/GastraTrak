@@ -26,12 +26,13 @@ public class FoodDiaryAddEditActivity extends AppCompatActivity {
         EditText foodName = findViewById(R.id.FoodNameInput);
         TimePicker foodTime = findViewById(R.id.timePicker);
         Intent intent = getIntent();
+
         String oldItemName = intent.getStringExtra("foodName");
         long oldItemTime = intent.getLongExtra("foodTime", System.currentTimeMillis());
         this.isEdit = intent.getBooleanExtra("isEdit", true);
-        oldItem = new FoodItem(oldItemName, new Time(oldItemTime));
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(oldItemTime);
+        oldItem = new FoodItem(oldItemName, cal);
         foodTime.setIs24HourView(Boolean.TRUE);
         foodName.setText(oldItemName);
         foodTime.setHour(cal.get(Calendar.HOUR_OF_DAY));
@@ -78,7 +79,7 @@ public class FoodDiaryAddEditActivity extends AppCompatActivity {
         cal.set(Calendar.HOUR_OF_DAY, foodTime.getHour());
         cal.set(Calendar.MINUTE, foodTime.getMinute());
         cal.set(Calendar.SECOND, 0);
-        FoodItem item = new FoodItem(foodName.getText().toString(), new Time(cal.getTimeInMillis()));
+        FoodItem item = new FoodItem(foodName.getText().toString(),cal);
         if(isEdit){
             db.removeFoodItem(this.oldItem);
         }
