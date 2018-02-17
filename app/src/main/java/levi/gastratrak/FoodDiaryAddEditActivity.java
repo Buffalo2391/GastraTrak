@@ -1,5 +1,6 @@
 package levi.gastratrak;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -83,8 +84,17 @@ public class FoodDiaryAddEditActivity extends AppCompatActivity {
         if(isEdit){
             db.removeFoodItem(this.oldItem);
         }
-        db.addFoodItem(item);
-        setResult(RESULT_OK);
-        finish();
+        if(db.addFoodItem(item)) {
+            setResult(RESULT_OK);
+            finish();
+        }else{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setMessage("Food Type cannot be blank")
+                    .setTitle("Error");
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
     }
 }

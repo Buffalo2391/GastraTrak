@@ -18,7 +18,7 @@ class DatabaseController extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 10;
 
     // Database Name
     private static final String DATABASE_NAME = "pain_and_food_diary";
@@ -98,19 +98,26 @@ class DatabaseController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    void addFoodItem(FoodItem item) {
-        try(SQLiteDatabase db = this.getWritableDatabase()) {
-            ContentValues values = new ContentValues();
-            values.put(KEY_FOOD_TIME, item.getFoodTime().getTimeInMillis()); // Time Consumed
-            values.put(KEY_FOOD_ITEM, item.getFoodItem()); // Food Name
-            db.insert(TABLE_FOOD, null, values);
+    boolean addFoodItem(FoodItem item) {
+        if(!item.getFoodItem().replaceAll("\\s","").isEmpty()) {
+            try (SQLiteDatabase db = this.getWritableDatabase()) {
+                ContentValues values = new ContentValues();
+                values.put(KEY_FOOD_TIME, item.getFoodTime().getTimeInMillis()); // Time Consumed
+                values.put(KEY_FOOD_ITEM, item.getFoodItem()); // Food Name
+                db.insert(TABLE_FOOD, null, values);
+            }
+            return true;
+        }else{
+            return false;
         }
     }
 
     void removeFoodItem(FoodItem item) {
 
         try(SQLiteDatabase db = this.getWritableDatabase()) {
-            db.delete(TABLE_FOOD, KEY_FOOD_ITEM + " = ?", new String[]{item.getFoodItem()});
+            db.delete(TABLE_FOOD,
+                    KEY_FOOD_ITEM + " = "+item.getFoodItem()+" and " +
+                    KEY_PAIN_TIME +" = "+String.valueOf(item.getFoodTime().getTimeInMillis())+" ", new String[]{});
         }
     }
 
@@ -136,7 +143,6 @@ class DatabaseController extends SQLiteOpenHelper {
     }
 
     ArrayList<FoodItem> getDateFoodItems(Calendar startCalendar, Calendar endCalendar) {
-
         ArrayList<FoodItem> result = new ArrayList<>();
         long startTimeLong = startCalendar.getTimeInMillis();
         long endTimeLong = endCalendar.getTimeInMillis();
