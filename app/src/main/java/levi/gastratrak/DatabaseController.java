@@ -10,6 +10,9 @@ import android.util.Log;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 class DatabaseController extends SQLiteOpenHelper {
 
@@ -85,8 +88,8 @@ class DatabaseController extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //Not currently saving old database on upgrade. Had some issues with debugging entries
-        // and being able to wipe the database by incrementing the version was helpful for quick testing
+        //Not currently saving old database on upgrade. Had some issues with debugging entries,
+        //and being able to wipe the database by incrementing the version was helpful for quick testing
 
         // TODO remove dropping tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_STOOL);
@@ -126,7 +129,7 @@ class DatabaseController extends SQLiteOpenHelper {
                 }
             }
         } catch (Exception e) {
-            Log.e("allfooditems", "" + e);
+            Log.e("all food items", "" + e);
         }
 
         return result;
@@ -154,6 +157,11 @@ class DatabaseController extends SQLiteOpenHelper {
         } catch (Exception e) {
             Log.e("date food items", "" + e);
         }
+        Collections.sort(result, (foodOne, foodTwo) -> {
+            long t1 = foodOne.getFoodTime().getTimeInMillis();
+            long t2 = foodTwo.getFoodTime().getTimeInMillis();
+            return ((int) (t1 - t2));
+        });
         return result;
     }
 
@@ -185,7 +193,7 @@ class DatabaseController extends SQLiteOpenHelper {
                 }
             }
         } catch (Exception e) {
-            Log.e("allpainitems", "" + e);
+            Log.e("all pain items", "" + e);
         }
         return result;
     }
@@ -208,7 +216,7 @@ class DatabaseController extends SQLiteOpenHelper {
                 }
             }
         } catch (Exception e) {
-            Log.e("allpainitems", "" + e);
+            Log.e("date pain items", "" + e);
         }
 
         return result;
@@ -242,7 +250,30 @@ class DatabaseController extends SQLiteOpenHelper {
                 }
             }
         } catch (Exception e) {
-            Log.e("allpainitems", "" + e);
+            Log.e("all stool items", "" + e);
+        }
+
+        return result;
+    }
+
+    public ArrayList<StoolItem> getDateStoolItems(Calendar startCalendar, Calendar endCalendar) {
+        ArrayList<StoolItem> result = new ArrayList<>();
+        Long startTimeLong = startCalendar.getTimeInMillis();
+        Long endTimeLong = endCalendar.getTimeInMillis();
+        String selectQuery = "SELECT  * FROM " + TABLE_STOOL + "WHERE " + KEY_STOOL_TIME + " > " +
+                startTimeLong + " AND " + KEY_STOOL_TIME + " < " + endTimeLong;
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            try (Cursor cursor = db.rawQuery(selectQuery, null)) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        int[] stoolArray = new int[]{cursor.getInt(2), cursor.getInt(3), cursor.getInt(4)};
+                        StoolItem item = new StoolItem(stoolArray, new Time(cursor.getLong(1)));
+                        result.add(item);
+                    } while (cursor.moveToNext());
+                }
+            }
+        } catch (Exception e) {
+            Log.e("date stool items", "" + e);
         }
 
         return result;

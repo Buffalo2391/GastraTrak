@@ -18,7 +18,6 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
     private final int layoutResourceId;
     private final Context context;
     private final DatabaseController db = new DatabaseController(this.getContext());
-    private Calendar displayDate = Calendar.getInstance();
     private FoodDiaryFragment fragItem;
     public FoodItemAdapter(Context context, ArrayList<FoodItem> items, FoodDiaryFragment fragItem) {
         super(context, R.layout.food_diary_entry, items);
@@ -58,7 +57,7 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
     }
 
     private void setDisplayDate(Calendar calendar){
-        displayDate = (Calendar) calendar.clone();
+        Calendar displayDate = (Calendar) calendar.clone();
         displayDate.set(Calendar.HOUR_OF_DAY, 0);
         displayDate.set(Calendar.MINUTE, 0);
         displayDate.set(Calendar.SECOND, 0);
@@ -70,7 +69,7 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         holder.foodType.setText(holder.foodObject.getFoodItem());
         holder.foodTime.setText(String.format("%02d:%02d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)));
     }
-    public void updateFromDatabase(Calendar startTime){
+    void updateFromDatabase(Calendar startTime){
         items.clear();
         Calendar endDate = (Calendar)startTime.clone();
         endDate.setTimeInMillis(startTime.getTimeInMillis()+86400000);
