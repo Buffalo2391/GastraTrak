@@ -44,7 +44,7 @@ public class GraphFragment extends Fragment {
 
     }
 
-    public void graphAddEditOpener() {
+    private void graphAddEditOpener() {
         Intent intent = new Intent(this.getContext(), GraphAddEditActivity.class);
         startActivity(intent);
     }
@@ -54,12 +54,7 @@ public class GraphFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Button bt = this.view.findViewById(R.id.graphButton);
-        bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                graphAddEditOpener();
-            }
-        });
+        bt.setOnClickListener(view -> graphAddEditOpener());
         GraphView graph = view.findViewById(R.id.graph);
         ArrayList<PainItem> painArray = new ArrayList<>();
         painArray.addAll(db.getAllPainItems());

@@ -6,14 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
-import java.sql.Time;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 public class FoodDiaryAddEditActivity extends AppCompatActivity {
     private FoodItem oldItem;
@@ -39,12 +36,7 @@ public class FoodDiaryAddEditActivity extends AppCompatActivity {
         foodTime.setHour(cal.get(Calendar.HOUR_OF_DAY));
         foodTime.setMinute(cal.get(Calendar.MINUTE));
         if (isEdit) {
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    deleteButtonPressed();
-                }
-            });
+            deleteButton.setOnClickListener(view -> deleteButtonPressed());
         } else {
             deleteButton.setEnabled(false);
         }

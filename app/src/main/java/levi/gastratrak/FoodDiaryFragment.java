@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class FoodDiaryFragment extends Fragment {
-    static final int MIN_DISTANCE = 150;
     private final ArrayList<FoodItem> foodsList = new ArrayList<>();
     private View view;
     private FoodItemAdapter foodAdapter;
@@ -46,12 +44,7 @@ public class FoodDiaryFragment extends Fragment {
         ListView foodDiaryView = this.view.findViewById(R.id.FoodListView);
         foodDiaryView.setAdapter(foodAdapter);
         FloatingActionButton fab = this.view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addFoodEmpty();
-            }
-        });
+        fab.setOnClickListener(view -> addFoodEmpty());
     }
 
 

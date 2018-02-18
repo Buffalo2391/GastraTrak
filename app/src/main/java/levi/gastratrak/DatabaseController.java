@@ -10,9 +10,7 @@ import android.util.Log;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 
 class DatabaseController extends SQLiteOpenHelper {
 

@@ -18,7 +18,7 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
     private final int layoutResourceId;
     private final Context context;
     private final DatabaseController db = new DatabaseController(this.getContext());
-    private FoodDiaryFragment fragItem;
+    private final FoodDiaryFragment fragItem;
     public FoodItemAdapter(Context context, ArrayList<FoodItem> items, FoodDiaryFragment fragItem) {
         super(context, R.layout.food_diary_entry, items);
         this.layoutResourceId = R.layout.food_diary_entry;
@@ -47,12 +47,7 @@ class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         holder.foodTime = row.findViewById(R.id.timeConsumed);
         row.setTag(holder);
         setupItem(holder);
-        holder.foodButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                fragItem.editFoodItem(items.get(position));
-            }
-        });
+        holder.foodButton.setOnClickListener(v -> fragItem.editFoodItem(items.get(position)));
         return row;
     }
 

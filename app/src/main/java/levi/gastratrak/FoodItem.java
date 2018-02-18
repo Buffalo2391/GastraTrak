@@ -1,5 +1,4 @@
 package levi.gastratrak;
-import java.sql.Time;
 import java.util.Calendar;
 
 /**

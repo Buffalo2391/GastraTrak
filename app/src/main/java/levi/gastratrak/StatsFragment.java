@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 public class StatsFragment extends Fragment {
 
-    private View view;
     private OnFragmentInteractionListener mListener;
 
     public StatsFragment() {
@@ -29,8 +28,7 @@ public class StatsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        this.view = inflater.inflate(R.layout.content_stats, container, false);
-        return view;
+        return inflater.inflate(R.layout.content_stats, container, false);
     }
 
 
